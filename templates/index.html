@@ -1,0 +1,7 @@
+{% extends 'layout.html' %}
+{% block head %}{% endblock %}
+{% block title %}Chat App{% endblock %}
+{% block content %}
+ Hi {{username}}
+ <a href="{{url_for('logout')}}">Log out</a>
+{% endblock %}
