@@ -1,98 +1,94 @@
 from flask import Flask, render_template, session, redirect, url_for, request, flash
 from flask_bcrypt import Bcrypt
 import sqlite3
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import exc
 
 # Initialization
 app = Flask(__name__)
 app.secret_key = 'dfadf3.vdasfli./355i9'
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 bcrypt = Bcrypt(app)
+db = SQLAlchemy(app)
 
 # SQL DATABASE Intialization
-con = sqlite3.connect('database.db')
-cur = con.cursor()
-query = f'''
-CREATE TABLE IF NOT EXISTS User(
-    username TEXT PRIMARY KEY,
-    password TEXT NOT NULL
-);
-'''
-cur.execute(query)
-query = f'''
-CREATE TABLE IF NOT EXISTS Message(
-    msg_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    content TEXT NOT NULL,
-    sender TEXT,
-    receiver TEXT,
-    date DATETIME,
-    FOREIGN KEY (sender) REFERENCES User(username),
-    FOREIGN KEY (receiver) REFERENCES User(username)
-);'''
-cur.execute(query)
-con.commit()
+
+
+class User(db.Model):
+    username = db.Column(db.String, primary_key=True)
+    password = db.Column(db.String, nullable=False)
+
+
+class Message(db.Model):
+    msg_id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String, nullable=False)
+    sender = db.Column(db.String, nullable=False)
+    receiver = db.Column(db.String, db.ForeignKey(
+        User.username), nullable=False)
+    date = db.Column(db.String,  db.ForeignKey(User.username), nullable=False)
+
+
+with app.app_context():
+    db.create_all()
+
 
 @app.route('/signup')
 def signup():
     if 'username' in session:
         flash("You are already logged in.")
-        return redirect(url_for('userpage', username=session['username']))
+        return redirect(url_for('userpage', username=session['username'], friend='default'))
     return render_template('signup.html')
+
 
 @app.post('/api/signup')
 def check_signup():
     if 'username' in session:
         flash("You are already logged in.")
-        return redirect(url_for('userpage', username=session['username']))
+        return redirect(url_for('userpage', username=session['username'], friend='default'))
     username = request.form['username']
     password = request.form['password']
     pw_hash = bcrypt.generate_password_hash(password).decode('utf-8')
     try:
-        con = sqlite3.connect('database.db')
-        cur = con.cursor()
-        query = f'''
-        INSERT INTO User
-        VALUES ("{username}","{pw_hash}");
-        '''
-        cur.execute(query)
-        con.commit()
+        new_user = User(username=username, password=pw_hash)
+        db.session.add(new_user)
+        db.session.commit()
         return redirect(url_for('login'))
-    except sqlite3.IntegrityError:
+    except exc.IntegrityError:
         flash('Username Taken. Choose Another One Please.')
         return redirect(url_for('signup'))
+
 
 @app.route('/login')
 def login():
     if 'username' in session:
         flash("You are already logged in.")
-        return redirect(url_for('userpage', username=session['username']))
+        return redirect(url_for('userpage', username=session['username'], friend='default'))
     return render_template('login.html')
+
 
 @app.post('/api/login')
 def check_login():
     if 'username' in session:
         flash("You are already logged in.")
-        return redirect(url_for('userpage', username=session['username']))
+        return redirect(url_for('userpage', username=session['username'], friend='default'))
     username = request.form['username']
     password = request.form['password']
-    con = sqlite3.connect('database.db')
-    cur = con.cursor()
-    query = f'''
-    SELECT * from User
-    WHERE username="{username}";
-    '''
-    results = cur.execute(query).fetchall()
-    print(results)
+    # returns a tuple (<User pk>,) <User pk> object has attributes same as columns
+    user = db.session.execute(
+        db.select(User).filter_by(username=username)).first()
     # no such user
-    if (len(results) == 0):
+    if user == None:
         flash('There is no such user.')
         return redirect(url_for('login'))
     # wrong password
-    if not bcrypt.check_password_hash(results[0][1], password):
+    if not bcrypt.check_password_hash(user[0].password, password):
         flash('Incorrect password')
         return redirect(url_for('login'))
     # correct
     else:
         session['username'] = username
-        return redirect(url_for('userpage', username=session['username']))
+        return redirect(url_for('userpage', username=session['username'], friend='default'))
+
 
 @app.route('/api/logout')
 def logout():
@@ -100,14 +96,16 @@ def logout():
     flash('Successfully logged out!')
     return redirect(url_for('login'))
 
+
 @app.route('/')
 def homepage():
     if 'username' in session:
-        return redirect(url_for('userpage', username=session['username']))
+        return redirect(url_for('userpage', username=session['username'], friend='default'))
     return redirect(url_for('login'))
 
-@app.route('/user/<username>')
-def userpage(username):
+
+@app.route('/user/<username>/<friend>')
+def userpage(username, friend):
     # not logged in
     if 'username' not in session:
         flash('Please login!')
@@ -116,7 +114,7 @@ def userpage(username):
     if session['username'] != username:
         flash('Accessing forbidden user!')
         return redirect(url_for('login'))
-    return render_template('index.html', username=username)
+    return render_template('index.html', username=username, friend=friend)
 
 
 app.run(debug=True)
