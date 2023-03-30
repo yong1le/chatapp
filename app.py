@@ -1,8 +1,7 @@
 from flask import Flask, render_template, session, redirect, url_for, request, flash
 from flask_bcrypt import Bcrypt
-import sqlite3
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import exc
+from sqlalchemy import exc, or_
 
 # Initialization
 app = Flask(__name__)
@@ -30,6 +29,27 @@ class Message(db.Model):
 
 with app.app_context():
     db.create_all()
+
+
+def get_users(username):
+    usernames = []
+    users = db.session.execute(
+        db.select(User).filter(User.username != username))
+    for user in users:
+        usernames.append(user[0].username)
+    return usernames
+
+
+def get_messages(user, friend):
+    messages = []
+    msgs = db.session.execute(db.select(Message).filter(
+        or_(Message.sender == user, Message.sender == friend),
+        or_(Message.receiver == friend, Message.receiver == user)
+    ))
+    for msg in msgs:
+        messages.append(msg[0].content)
+    print(messages)
+    return messages
 
 
 @app.route('/signup')
@@ -114,7 +134,9 @@ def userpage(username, friend):
     if session['username'] != username:
         flash('Accessing forbidden user!')
         return redirect(url_for('login'))
-    return render_template('index.html', username=username, friend=friend)
+    users = get_users(username)
+    messages = get_messages(username, friend)
+    return render_template('index.html', users=users, messages=messages, username=username)
 
 
 app.run(debug=True)

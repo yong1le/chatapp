@@ -1,7 +1,34 @@
-{% extends 'layout.html' %}
-{% block head %}{% endblock %}
-{% block title %}Chat App{% endblock %}
-{% block content %}
- Hi {{username}}
- <a href="{{url_for('logout')}}">Log out</a>
+{% extends 'layout.html' %} {% block head %}{% endblock %} {% block title %}Chat
+App{% endblock %} {% block content %}
+
+<nav class="header">
+  {{username}}
+  <a href="{{url_for('logout')}}">Logout</a>
+</nav>
+
+<div class="friends-list">
+  <ul>
+    {% for user in users %}
+    <li>
+      <a href="{{url_for('userpage', username=username, friend=user)}}">
+        {{user}}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="chatbox">
+  {% if not messages %}
+  START A CHAT!
+  {% endif %}
+
+  {% for message in messages %}
+  <div class="msg">{{message}}</div>
+  {% endfor %}
+
+  <form action="">
+    <input type="text" id="new-msg"/>
+  </form>
+</div>
 {% endblock %}

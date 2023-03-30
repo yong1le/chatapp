@@ -1,0 +1,43 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #c0d4e1;
+}
+
+.main {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-areas:
+    'header header'
+    'friends chat';
+  grid-template-columns: 30vw 1fr;
+  grid-template-rows: 10vh 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+
+.header,.friends-list,.chatbox {
+  background-color: #78A3D4;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.header {
+  grid-area: header;
+}
+
+.friends-list {
+  grid-area: friends;
+}
+
+.chatbox {
+  grid-area: chat;
+}
