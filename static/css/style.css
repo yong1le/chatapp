@@ -82,6 +82,12 @@
   min-height: 0;
 }
 
+.default {
+  font-size: 3rem;
+  align-self: center;
+  color: #c0d4e1;
+}
+
 .messages-box {
   display: flex;
   flex-direction: column;

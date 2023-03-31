@@ -19,7 +19,7 @@ App{% endblock %} {% block content %}
 </div>
 
 <div class="chatbox">
-  {% if not messages %} START A CHAT! {% endif %} 
+  {% if not messages %} <div class="default">Start a Chat</div> {% endif %} 
   <div class="messages-box">
     {% if messages %} 
       {% for message in messages %}
