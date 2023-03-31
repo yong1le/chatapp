@@ -6,9 +6,9 @@
     <form action="{{url_for('check_signup')}}" method="POST" class="login-form">
       <p>Sign Up</p>
       <label for="username" id="username-label">New Username</label>
-      <input type="text" id="username" name="username"/>
+      <input type="text" id="username" name="username" required/>
       <label for="password" id="password-label">Password</label>
-      <input type="password" id="password" name="password"/>
+      <input type="password" id="password" name="password" required/>
       <button type="submit" class="login-btn">Sign Up!</button>
       <a href="{{url_for('login')}}">Already have an account? Log in!</a>
     </form>
