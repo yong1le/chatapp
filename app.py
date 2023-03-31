@@ -1,7 +1,9 @@
 from flask import Flask, render_template, session, redirect, url_for, request, flash
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import exc, or_
+from sqlalchemy import exc, or_, Identity
+from random import randint
+import datetime
 
 # Initialization
 app = Flask(__name__)
@@ -19,7 +21,7 @@ class User(db.Model):
 
 
 class Message(db.Model):
-    msg_id = db.Column(db.Integer, primary_key=True)
+    msg_id = db.Column(db.Integer, Identity(start=0, cycle=True), primary_key=True)
     content = db.Column(db.String, nullable=False)
     sender = db.Column(db.String, nullable=False)
     receiver = db.Column(db.String, db.ForeignKey(
@@ -47,8 +49,14 @@ def get_messages(user, friend):
         or_(Message.receiver == friend, Message.receiver == user)
     ))
     for msg in msgs:
-        messages.append(msg[0].content)
-    print(messages)
+        messages.append(
+            {
+                'sender': msg[0].sender,
+                'receiver': msg[0].receiver,
+                'content': msg[0].content,
+                'date': msg[0].date
+            }
+        )
     return messages
 
 
@@ -136,7 +144,23 @@ def userpage(username, friend):
         return redirect(url_for('login'))
     users = get_users(username)
     messages = get_messages(username, friend)
-    return render_template('index.html', users=users, messages=messages, username=username)
+    return render_template('index.html',
+                           users=users, messages=messages,
+                           username=username, friend=friend
+                           )
+
+
+@app.post('/api/send/<username>/<friend>')
+def send_message(username, friend):
+    new_message = Message(
+        content=request.form['content'],
+        sender=username,
+        receiver=friend,
+        date= str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M"))
+    )
+    db.session.add(new_message)
+    db.session.commit()
+    return redirect(url_for('userpage', username=username, friend=friend))
 
 
 app.run(debug=True)

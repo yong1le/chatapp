@@ -19,16 +19,38 @@ App{% endblock %} {% block content %}
 </div>
 
 <div class="chatbox">
-  {% if not messages %}
-  START A CHAT!
+  {% if not messages %} START A CHAT! {% endif %} 
+  {% if messages %} 
+    {% for message in messages %}
+      {% if message['sender'] == friend %}
+        <div class="from-msg msg">
+          <div class="msg-sender">{{message['sender']}}</div>
+          <div class="msg-content">{{message['content']}}</div>
+          <div class="msg-date">{{ message['date'] }}</div>
+        </div>
+      {% endif %}
+      {% if message['sender'] == username %}
+        <div class="to-msg msg">
+          <div class="msg-sender">{{message['sender']}}</div>
+          <div class="msg-content">{{message['content']}}</div>
+          <div class="msg-date">{{ message['date'] }}</div>
+        </div>
+      {% endif %}
+    {% endfor %}
   {% endif %}
-
-  {% for message in messages %}
-  <div class="msg">{{message}}</div>
-  {% endfor %}
-
-  <form action="">
-    <input type="text" id="new-msg"/>
-  </form>
+  {% if friend != 'default' %}
+    <form
+      action="{{url_for('send_message', username=username, friend=friend)}}"
+      method="POST"
+      class="textbox"
+    >
+      <input type="text" id="new-msg" name="content"/>
+      <input type="submit" id="submit-msg" value="Enter"/>
+    </form>
+  {% endif %}
+  <script>
+    const submit = document.querySelector('#submit-msg')
+    submit.addEventListener('submit', (e)=>e.preventDefault())
+  </script>
 </div>
 {% endblock %}
