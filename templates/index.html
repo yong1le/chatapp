@@ -2,14 +2,14 @@
 App{% endblock %} {% block content %}
 
 <nav class="header">
-  {{username}}
+  Logged in as {{username}}
   <a href="{{url_for('logout')}}">Logout</a>
 </nav>
 
-<div class="friends-list">
-  <ul>
+<div class="friends-box">
+  <ul class="friends-list">
     {% for user in users %}
-    <li>
+    <li class="friend">
       <a href="{{url_for('userpage', username=username, friend=user)}}">
         {{user}}
       </a>
@@ -20,37 +20,39 @@ App{% endblock %} {% block content %}
 
 <div class="chatbox">
   {% if not messages %} START A CHAT! {% endif %} 
-  {% if messages %} 
-    {% for message in messages %}
-      {% if message['sender'] == friend %}
-        <div class="from-msg msg">
-          <div class="msg-sender">{{message['sender']}}</div>
-          <div class="msg-content">{{message['content']}}</div>
-          <div class="msg-date">{{ message['date'] }}</div>
-        </div>
-      {% endif %}
-      {% if message['sender'] == username %}
-        <div class="to-msg msg">
-          <div class="msg-sender">{{message['sender']}}</div>
-          <div class="msg-content">{{message['content']}}</div>
-          <div class="msg-date">{{ message['date'] }}</div>
-        </div>
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-  {% if friend != 'default' %}
-    <form
-      action="{{url_for('send_message', username=username, friend=friend)}}"
-      method="POST"
-      class="textbox"
-    >
-      <input type="text" id="new-msg" name="content"/>
-      <input type="submit" id="submit-msg" value="Enter"/>
-    </form>
-  {% endif %}
-  <script>
-    const submit = document.querySelector('#submit-msg')
-    submit.addEventListener('submit', (e)=>e.preventDefault())
-  </script>
+  <div class="messages-box">
+    {% if messages %} 
+      {% for message in messages %}
+        {% if message['sender'] == friend %}
+          <div class="from-msg msg">
+            <div class="msg-sender">{{message['sender']}}</div>
+            <div class="msg-content">{{message['content']}}</div>
+            <div class="msg-date">{{ message['date'] }}</div>
+          </div>
+        {% endif %}
+        {% if message['sender'] == username %}
+          <div class="to-msg msg">
+            <div class="msg-sender">{{message['sender']}}</div>
+            <div class="msg-content">{{message['content']}}</div>
+            <div class="msg-date">{{ message['date'] }}</div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </div>
+  <div class="textbox">
+    {% if friend != 'default' %}
+      <form
+        action="{{url_for('send_message', username=username, friend=friend)}}"
+        method="POST"
+        class="msg-form"
+        autocomplete="off"
+      >
+        <input type="text" id="new-msg" name="content" placeholder="Message"/>
+        <input type="submit" id="submit-msg" value=""/>
+      </form>
+    {% endif %}
+  </div>
+  <script src="{{url_for('static', filename='js/checkMsg.js')}}"></script>
 </div>
 {% endblock %}
