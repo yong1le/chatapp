@@ -163,4 +163,5 @@ def send_message(username, friend):
     return redirect(url_for('userpage', username=username, friend=friend))
 
 
-app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
