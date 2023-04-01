@@ -128,11 +128,19 @@
   padding: 0 10px;
 }
 
+.from-msg > .msg-content {
+  background-color: #c0d4e1;
+  color: #78a3d4;
+}
+
+.to-msg > .msg-content {
+  background-color: #93b9dd;
+  color: #cfe0eb;
+}
+
 .msg-content {
-  background-color: #a6c3e4;
   border-radius: 10px;
   padding: 10px 10px;
-  color: #78a3d4;
   margin: 5px 0;
   width: fit-content;
 }
