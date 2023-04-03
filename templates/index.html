@@ -9,11 +9,20 @@ App{% endblock %} {% block content %}
 <div class="friends-box">
   <ul class="friends-list">
     {% for user in users %}
-    <li class="friend">
-      <a href="{{url_for('userpage', username=username, friend=user)}}">
-        {{user}}
-      </a>
-    </li>
+      {% if friend == user %}
+        <li class="current-friend">
+          <a href="{{url_for('userpage', username=username, friend=user)}}">
+            {{user}}
+          </a>
+        </li>
+      {% endif %}
+      {% if friend != user %}
+        <li class="friend">
+          <a href="{{url_for('userpage', username=username, friend=user)}}">
+            {{user}}
+          </a>
+        </li>
+      {% endif %}
     {% endfor %}
   </ul>
 </div>

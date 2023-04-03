@@ -59,20 +59,34 @@
   list-style: none;
 }
 
-.friend {
+.friend,
+.current-friend {
   border-bottom: 1px #a6c3e4 solid;
 }
 
-.friend > a {
+.friend > a,
+.current-friend > a {
   display: block;
   padding: 40px;
   font-size: 1.5em;
   text-decoration: none;
+}
+
+.friend > a {
   color: #c0d4e1;
 }
 
 .friend > a:hover {
   font-weight: bold;
+}
+
+.current-friend {
+  background-color: #c0d4e1;
+  font-weight: bold;
+}
+
+.current-friend > a {
+  color: #78a3d4;
 }
 
 .chatbox {
@@ -160,9 +174,15 @@
   background-color: #a6c3e4;
   color: #78a3d4;
 }
+
+.msg-form > input[type='text']:focus {
+  outline: none;
+}
+
 .msg-form > input[type='submit'] {
   display: none;
 }
+
 .msg-form > input::selection {
   background-color: #cfe0eb;
 }
@@ -192,7 +212,7 @@
   .friend {
     border-bottom: 0;
     border-left: 1px solid #a6c3e4;
-    display: inline
+    display: inline;
   }
 
   .friend > a {
