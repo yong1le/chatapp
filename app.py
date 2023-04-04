@@ -2,7 +2,6 @@ from flask import Flask, render_template, session, redirect, url_for, request, f
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc, or_, Identity
-from random import randint
 import datetime
 
 # Initialization
@@ -13,14 +12,13 @@ bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 
 # SQL DATABASE Intialization
-
-
 class User(db.Model):
     username = db.Column(db.String, primary_key=True)
     password = db.Column(db.String, nullable=False)
 
 
 class Message(db.Model):
+    # Use Identity to auto increment the msg_id
     msg_id = db.Column(db.Integer, Identity(start=0, cycle=True), primary_key=True)
     content = db.Column(db.String, nullable=False)
     sender = db.Column(db.String, nullable=False)
@@ -34,6 +32,8 @@ with app.app_context():
 
 
 def get_users(username):
+    ''' Return all the users in the database except for username
+    '''
     usernames = []
     users = db.session.execute(
         db.select(User).filter(User.username != username))
@@ -43,11 +43,16 @@ def get_users(username):
 
 
 def get_messages(user, friend):
+    ''' Return all the messages in the database between user and friend
+    '''
     messages = []
+    # The messages can be from the user to the friend, or vice versa
     msgs = db.session.execute(db.select(Message).filter(
         or_(Message.sender == user, Message.sender == friend),
         or_(Message.receiver == friend, Message.receiver == user)
     ))
+    # format as a list of dictionaries. This makes it easier to use the data
+    # in index.html
     for msg in msgs:
         messages.append(
             {
@@ -160,6 +165,7 @@ def send_message(username, friend):
     )
     db.session.add(new_message)
     db.session.commit()
+    # Redirect to original page
     return redirect(url_for('userpage', username=username, friend=friend))
 
 
