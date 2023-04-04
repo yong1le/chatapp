@@ -1,3 +1,4 @@
+<!-- The layout file for the login and signup pages -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -20,6 +21,8 @@
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
+    <!-- The place for the temporary flashed messages. In flashes.css this
+    is styled so that it appears as a 'notification' on the top right corner -->
     <div class="form-main">
       {% with messages = get_flashed_messages() %} {% if messages %}
       <ul class="flashes">
@@ -29,6 +32,8 @@
       </ul>
       {% endif %} {% endwith %} {% block content %}{% endblock %}
     </div>
+    <!-- The script file for making the flashes 'disappear' after a few
+    seconds -->
     <script src="{{ url_for('static', filename='js/flashes.js')}}"></script>
   </body>
 </html>

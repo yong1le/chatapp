@@ -23,6 +23,7 @@
   animation: 5s linear alternate infinite move-shadow;
 }
 
+/* An animation for the shadow behind the login box. */
 @keyframes move-shadow {
   from {
     box-shadow: -20px -20px 10px #8BADD3;

@@ -31,6 +31,7 @@
   color: #a6c3e4;
 }
 
+/* The logout button */
 .header > a {
   background-color: #c0d4e1;
   color: #78a3d4;
@@ -48,6 +49,7 @@
   grid-area: friends;
   padding: 0px;
   overflow: auto;
+  /* I use firefox */
   scrollbar-width: none;
 }
 
@@ -80,6 +82,7 @@
   font-weight: bold;
 }
 
+/* The current selected friend should be highlighted */
 .current-friend {
   background-color: #c0d4e1;
   font-weight: bold;
@@ -120,6 +123,7 @@
   margin: 20px 0;
 }
 
+/* Align the messages on opposite sides like a regular text messaging app */
 .from-msg {
   align-self: flex-start;
   align-items: flex-start;
@@ -193,6 +197,8 @@
     grid-template-rows: 10vh 10vh 1fr;
     grid-template-columns: 1fr;
   }
+
+  /* In small screen mode, the friends list will scroll horizontally */
   .friends-box {
     overflow-x: auto;
     overflow-y: hidden;
