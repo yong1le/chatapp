@@ -1,5 +1,5 @@
 # CSCB20 A3
-author: Yong Le He, 1009046104
+author: Yong Le He
 
 ## Dependencies:
 - Flask
