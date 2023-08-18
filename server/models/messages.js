@@ -42,7 +42,7 @@ const Message = sequelize.define(
  * created, or `null` otherwise
  */
 export const addMessage = async (sender, receiver, contents) => {
-  Message.sync();
+  await Message.sync();
 
   try {
     const message = await Message.create({
@@ -63,7 +63,7 @@ export const addMessage = async (sender, receiver, contents) => {
  * @return An array of the messages
  */
 export const findMessages = async (sender, receiver) => {
-  Message.sync();
+  await Message.sync();
 
   const messages = await Message.findAll({
     where: {
@@ -87,7 +87,7 @@ export const findMessages = async (sender, receiver) => {
 };
 
 export const findAllMessages = async () => {
-  Message.sync();
+  await Message.sync();
   const messages = await Message.findAll();
 
   if (messages) {
