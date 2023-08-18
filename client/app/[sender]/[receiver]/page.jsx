@@ -4,7 +4,7 @@ import ChatBox from "@/components/ChatBox";
 import MessageBox from "@/components/MessageBox";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 
 const page = ({ params }) => {
@@ -17,11 +17,12 @@ const page = ({ params }) => {
   useEffect(() => {
     if (sender === receiver) {
       router.push(`/${sender}`);
+      return;
     }
     axios.get(`http://localhost:8000/users/find/${receiver}`).then((res) => {
-      console.log(res.data)
       if (!res.data) {
         router.push(`/${sender}`);
+        return;
       }
     });
   }, []);
@@ -52,9 +53,15 @@ const page = ({ params }) => {
     e.target.contents.value = "";
   };
 
+  // make sure chatbox is always scrolled to bottom
+  const chatbox = useRef(null);
+  useEffect(() => {
+    chatbox.current.scrollTop = chatbox.current.scrollHeight;
+  }, [messages]);
+
   return (
     <div className="flex flex-col h-full">
-      <div className="h-full border-b-2 overflow-auto">
+      <div className="h-full border-b-2 overflow-auto" ref={chatbox}>
         <ChatBox messages={messages} />
       </div>
       <div className="h-min flex py-2">
