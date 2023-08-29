@@ -6,7 +6,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-const page = () => {
+const SignupPage = () => {
   const router = useRouter();
   const handleSignup = async (e) => {
     const data = new FormData(e.target.form);
@@ -19,7 +19,7 @@ const page = () => {
 
     e.preventDefault();
     const res = await axios.post(
-      `http://localhost:8000/users/check/${user}/${password}`
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/users/check/${user}/${password}`
     );
     if (!res.data) {
       alert("error");
@@ -43,4 +43,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default SignupPage;

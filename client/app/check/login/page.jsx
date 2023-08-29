@@ -6,7 +6,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-const page = () => {
+const LoginPage = () => {
   const router = useRouter();
 
   const handleLogin = async (e) => {
@@ -21,7 +21,7 @@ const page = () => {
 
     e.preventDefault();
     const res = await axios.get(
-      `http://localhost:8000/users/check/${user}/${password}`
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/users/check/${user}/${password}`
     );
     if (!res.data) {
       alert("error");
@@ -44,4 +44,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default LoginPage;

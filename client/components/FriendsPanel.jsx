@@ -7,7 +7,7 @@ const FriendsPanel = ({ user }) => {
   const [friends, setFriends] = useState([]);
 
   useEffect(() => {
-    axios.get(`http://localhost:8000/users/list/${user}`).then((res) => {
+    axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/list/${user}`).then((res) => {
       if (!res.data) {
         setFriends([]);
       } else {

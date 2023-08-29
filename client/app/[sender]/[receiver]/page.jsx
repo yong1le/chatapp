@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 
-const page = ({ params }) => {
+const ChatPage = ({ params }) => {
   const sender = params.sender;
   const receiver = params.receiver;
 
@@ -19,7 +19,7 @@ const page = ({ params }) => {
       router.push(`/${sender}`);
       return;
     }
-    axios.get(`http://localhost:8000/users/find/${receiver}`).then((res) => {
+    axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/find/${receiver}`).then((res) => {
       if (!res.data) {
         router.push(`/${sender}`);
         return;
@@ -27,7 +27,7 @@ const page = ({ params }) => {
     });
   }, []);
 
-  const WS_URL = `ws://localhost:8000/messages/${sender}/${receiver}`;
+  const WS_URL = `${process.env.NEXT_PUBLIC_WS_URL}/messages/${sender}/${receiver}`;
   const [messages, setMessages] = useState([]);
 
   const { sendJsonMessage } = useWebSocket(WS_URL, {
@@ -71,4 +71,4 @@ const page = ({ params }) => {
   );
 };
 
-export default page;
+export default ChatPage;
