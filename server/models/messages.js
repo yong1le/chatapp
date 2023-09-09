@@ -38,8 +38,8 @@ const Message = sequelize.define(
  * @param {string} [sender] The sender of the message
  * @param {string} [receiver] The receiver of the message
  * @param {string} [contents] The contents of the message
- * @return {Message} A `Message` object if the message was successfully
- * created, or `null` otherwise
+ // * @return {Promise<Message>} A `Message` object if the message was successfully
+ // * created, or `null` otherwise
  */
 export const addMessage = async (sender, receiver, contents) => {
   await Message.sync();
