@@ -6,8 +6,8 @@ const ChatBox = ({messages}) => {
   const user = getUser();
   return (
     <div className='flex flex-col p-5'>
-      {messages.map((message) => (
-        <Message message={message} sender={user}/>
+      {messages.map((message, i) => (
+        <Message message={message} sender={user} key = {i}/>
       ))}
     </div>
   )

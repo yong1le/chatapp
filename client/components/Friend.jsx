@@ -12,6 +12,7 @@ const Friend = ({ friend }) => {
     const user = getUser();
     router.push(`/${user}/${friend}`);
   };
+
   return (
     <button
       onClick={goToFriend}

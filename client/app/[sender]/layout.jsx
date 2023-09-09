@@ -6,7 +6,7 @@ import MenuBar from "@/components/MenuBar";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const layout = ({ params, children }) => {
+const MainLayout = ({ params, children }) => {
   const user = params.sender;
 
   const router = useRouter();
@@ -17,7 +17,7 @@ const layout = ({ params, children }) => {
       <div className="border-b-2 border-black min-h-content" style={{ height: "10%" }}>
         <MenuBar user={user} />
       </div>
-      <div className="flex flex-row  block" style={{ height: "90%" }}>
+      <div className="flex flex-row" style={{ height: "90%" }}>
         <div className="w-1/6 md:w-1/4 border-r-2 border-black">
           <FriendsPanel user={user} />
         </div>
@@ -27,4 +27,4 @@ const layout = ({ params, children }) => {
   );
 };
 
-export default layout;
+export default MainLayout;
