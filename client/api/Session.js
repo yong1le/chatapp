@@ -1,7 +1,13 @@
 export const setUser = (user) => {
-  localStorage.setItem("user", user);
+  try {
+    localStorage.setItem("user", user);
+  } catch (e) { }
 };
 
 export const getUser = () => {
-  return localStorage.getItem("user");
+  try {
+    return localStorage.getItem("user");
+  } catch (e) {
+    return "";
+  }
 };
